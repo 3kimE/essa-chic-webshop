@@ -48,14 +48,15 @@ const About = () => {
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full border-2 border-amber-600 rounded-lg"></div>
               <div className="relative overflow-hidden rounded-lg">
-                <AspectRatio ratio={4/5}>
-                  <img
-                    src="https://images.unsplash.com/photo-1602173574767-37ac01994b2c?q=80&w=1470"
-                    alt="Artisan working on jewelry"
-                    className="object-cover"
-                  />
+                <AspectRatio ratio={7/5}>
+                  <img 
+                  src="https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?q=80&w=2070" 
+                  alt="Luxury Jewelry" 
+                  className="w-full h-full object-cover"
+                />
                 </AspectRatio>
               </div>
+              
             </div>
           </div>
         </div>

@@ -168,39 +168,45 @@ const Index = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-20 bg-slate-900 text-white">
-        <div className="container mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl lg:text-5xl font-serif font-bold mb-6">
-                Visit Our Workshop
-              </h2>
-              <p className="text-xl text-gray-300 mb-8">
-                Experience the magic of traditional jewelry making in the heart of Essaouira's artisan quarter.
-              </p>
-              
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <MapPin className="w-6 h-6 text-amber-400" />
-                  <span>N° 3, Complexe Artisanal Argana, Essaouira, Morocco</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Phone className="w-6 h-6 text-amber-400" />
-                  <span>+212 6 57 20 64 99</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="relative">
-              <img
-                src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=2070"
-                alt="Essaouira workshop"
-                className="rounded-lg shadow-2xl"
-              />
-            </div>
+     <section className="py-20 bg-slate-900 text-white">
+  <div className="container mx-auto px-6 lg:px-8">
+    <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 className="text-4xl lg:text-5xl font-serif font-bold mb-6">
+          Visit Our Workshop
+        </h2>
+        <p className="text-xl text-gray-300 mb-8">
+          Experience the magic of traditional jewelry making in the heart of Essaouira's artisan quarter.
+        </p>
+
+        <div className="space-y-4">
+          <div className="flex items-center gap-4">
+            <MapPin className="w-6 h-6 text-amber-400" />
+            <span>N° 3, Complexe Artisanal Argana, Essaouira, Morocco</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Phone className="w-6 h-6 text-amber-400" />
+            <span>+212 6 57 20 64 99</span>
           </div>
         </div>
-      </section>
+      </div>
+
+      <div className="relative overflow-hidden rounded-lg shadow-2xl h-[400px]">
+        <iframe
+          title="EssaBijoux Chic Workshop Location"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3341.3425796619637!2d-9.764664385193142!3d31.50849208038488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdb524f3d21e285b%3A0xf3f5a20a7d7ea661!2sComplexe%20Artisanal%20Argana!5e0!3m2!1sen!2sma!4v1716463179392!5m2!1sen!2sma"
+          width="100%"
+          height="100%"
+    
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="border-0 w-full h-full"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
     </div>
   );
 };

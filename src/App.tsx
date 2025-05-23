@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Products from "./pages/Products";
-import Shop from "./pages/Shop";
+
 import Gallery from "./pages/Gallery";
 import Location from "./pages/Location";
 import ProductDetail from "./pages/ProductDetail";
@@ -31,7 +31,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/shop" element={<Shop />} />
+      
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/location" element={<Location />} />
             <Route path="/product/:id" element={<ProductDetail />} />

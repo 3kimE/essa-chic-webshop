@@ -88,11 +88,18 @@ const Location = () => {
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
           {/* Map or Location Image */}
           <div className="relative rounded-lg overflow-hidden shadow-xl h-[400px] md:h-[500px]">
-            <img 
-              src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=2070" 
-              alt="Workshop Entrance"
-              className="w-full h-full object-cover"
-            />
+             <div className="relative overflow-hidden rounded-lg shadow-2xl h-[400px]">
+        <iframe
+          title="EssaBijoux Chic Workshop Location"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3341.3425796619637!2d-9.764664385193142!3d31.50849208038488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdb524f3d21e285b%3A0xf3f5a20a7d7ea661!2sComplexe%20Artisanal%20Argana!5e0!3m2!1sen!2sma!4v1716463179392!5m2!1sen!2sma"
+          width="100%"
+          height="100%"
+    
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="border-0 w-full h-full"
+        ></iframe>
+      </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end">
               <div className="p-6 text-white">
                 <h2 className="text-2xl font-serif font-bold mb-2">Essaouira Workshop</h2>
