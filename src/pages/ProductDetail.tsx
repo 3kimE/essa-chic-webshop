@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ShoppingCart, Heart, Star, Truck, Shield, Award } from "lucide-react";
 import { toast } from "sonner";
+import { useCart } from "@/context/CartContext";
 
 // Mock product data - in a real app, this would come from an API
 const products = {
@@ -17,7 +18,7 @@ const products = {
       "https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?q=80&w=2070"
     ],
     price: 450,
-    currency: "MAD",
+    currency: "MAD" as const,
     category: "Bracelets",
     description: "Handcrafted adjustable silver bracelet with traditional Berber engravings",
     longDescription: "This exquisite silver bracelet showcases the finest traditions of Berber craftsmanship. Each intricate detail is hand-engraved using techniques passed down through generations. The adjustable design ensures a perfect fit, while the traditional motifs tell stories of Morocco's rich cultural heritage.",
@@ -41,7 +42,7 @@ const products = {
       "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=2070"
     ],
     price: 680,
-    currency: "MAD",
+    currency: "MAD" as const,
     category: "Necklaces",
     description: "Elegant filigree necklace with natural coral stone pendant",
     longDescription: "A masterpiece of filigree artistry, this necklace features a stunning natural coral stone set within an intricate silver framework. The delicate metalwork creates a lace-like pattern that perfectly complements the vibrant coral centerpiece.",
@@ -65,7 +66,7 @@ const products = {
       "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070"
     ],
     price: 320,
-    currency: "MAD",
+    currency: "MAD" as const,
     category: "Earrings",
     description: "Traditional star motif earrings with colorful enamel details",
     longDescription: "These stunning earrings feature the traditional Berber star motif, symbolizing guidance and protection. The colorful enamel work is achieved through ancient techniques, creating vibrant patterns that catch the light beautifully.",
@@ -89,6 +90,7 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { addToCart } = useCart();
 
   const product = id ? products[id as keyof typeof products] : null;
 
@@ -103,9 +105,14 @@ const ProductDetail = () => {
     );
   }
 
-  const addToCart = () => {
-    toast.success(`Added ${product.name} to cart!`);
-    console.log(`Added ${quantity}x ${product.name} to cart`);
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      currency: product.currency,
+      image: product.images[0],
+    });
   };
 
   const toggleWishlist = () => {
@@ -114,7 +121,8 @@ const ProductDetail = () => {
   };
 
   const buyNow = () => {
-    navigate("/checkout", { state: { product, quantity } });
+    handleAddToCart();
+    navigate("/checkout");
   };
 
   return (
@@ -215,7 +223,7 @@ const ProductDetail = () => {
 
               <div className="flex gap-4">
                 <Button 
-                  onClick={addToCart}
+                  onClick={handleAddToCart}
                   className="flex-1 bg-amber-600 hover:bg-amber-700 text-white"
                   size="lg"
                 >

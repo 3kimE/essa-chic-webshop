@@ -1,18 +1,18 @@
 
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, CreditCard, Truck, Shield } from "lucide-react";
+import { ArrowLeft, CreditCard, Truck, Shield, Plus, Minus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useCart } from "@/context/CartContext";
 
 const Checkout = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const { product, quantity = 1 } = location.state || {};
+  const { cart, updateQuantity, removeFromCart, getTotalPrice, clearCart } = useCart();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -29,19 +29,8 @@ const Checkout = () => {
     cardName: ""
   });
 
-  if (!product) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">No product selected</h1>
-          <Button onClick={() => navigate("/products")}>Browse Products</Button>
-        </div>
-      </div>
-    );
-  }
-
-  const subtotal = product.price * quantity;
   const shipping = 50; // MAD
+  const subtotal = getTotalPrice();
   const total = subtotal + shipping;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,6 +42,11 @@ const Checkout = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (cart.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
     
     // Validate form
     const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'country', 'cardNumber', 'expiryDate', 'cvv'];
@@ -66,11 +60,44 @@ const Checkout = () => {
     // Simulate payment processing
     toast.success("Order placed successfully! You will receive a confirmation email shortly.");
     
+    // Clear cart after successful checkout
+    clearCart();
+    
     // In a real app, this would process the payment and redirect to a success page
     setTimeout(() => {
       navigate("/order-success", { state: { orderId: "ESS" + Date.now() } });
     }, 2000);
   };
+
+  // If cart is empty, show empty cart message
+  if (cart.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(-1)}
+            className="mb-8 text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+          
+          <div className="text-center py-16 bg-white rounded-lg shadow-sm">
+            <h1 className="text-3xl font-serif font-bold text-gray-900 mb-4">Your Cart is Empty</h1>
+            <p className="text-gray-600 mb-8">Looks like you haven't added any items to your cart yet.</p>
+            <Button 
+              onClick={() => navigate('/shop')}
+              className="bg-amber-600 hover:bg-amber-700 text-white"
+              size="lg"
+            >
+              Continue Shopping
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -272,27 +299,50 @@ const Checkout = () => {
           </div>
 
           {/* Order Summary */}
-          <div className="lg:sticky lg:top-8 h-fit">
+          <div className="lg:sticky lg:top-8 h-fit space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Order Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Product */}
-                <div className="flex gap-4">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-20 h-20 object-cover rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                    <p className="text-gray-600 text-sm">{product.category}</p>
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-sm text-gray-600">Qty: {quantity}</span>
-                      <span className="font-semibold">{product.price} MAD</span>
+                {/* Products */}
+                <div className="space-y-4">
+                  {cart.map((item) => (
+                    <div key={item.id} className="flex gap-4 py-2">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-20 h-20 object-cover rounded-lg"
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900">{item.name}</h3>
+                        <div className="flex justify-between items-center mt-2">
+                          <div className="flex items-center border border-gray-200 rounded">
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              className="px-2 py-1 text-gray-600 hover:text-amber-600"
+                            >
+                              <Minus size={16} />
+                            </button>
+                            <span className="px-3 py-1 border-x border-gray-200">{item.quantity}</span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="px-2 py-1 text-gray-600 hover:text-amber-600"
+                            >
+                              <Plus size={16} />
+                            </button>
+                          </div>
+                          <span className="font-semibold">{item.price * item.quantity} {item.currency}</span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-gray-400 hover:text-red-500"
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </div>
-                  </div>
+                  ))}
                 </div>
 
                 <Separator />
@@ -337,6 +387,14 @@ const Checkout = () => {
                 </div>
               </CardContent>
             </Card>
+            
+            <Button
+              variant="outline" 
+              onClick={() => navigate('/shop')} 
+              className="w-full border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white"
+            >
+              Continue Shopping
+            </Button>
           </div>
         </div>
       </div>

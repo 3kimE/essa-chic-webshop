@@ -1,22 +1,38 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [cartItems, setCartItems] = useState(0);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  // Get cart items from localStorage on component mount
+  useEffect(() => {
+    const storedCart = localStorage.getItem("essaBijouxCart");
+    if (storedCart) {
+      const cart = JSON.parse(storedCart);
+      const itemCount = cart.reduce((total: number, item: any) => total + item.quantity, 0);
+      setCartItems(itemCount);
+    }
+  }, [location]); // Re-check when location changes (navigate between pages)
+
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-gray-100">
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center">
-            <span className="font-serif text-2xl font-bold text-amber-700">EssaBijoux Chic</span>
+            <span className="text-2xl font-bold">
+              <span className="text-amber-600">Essa</span>
+              <span className="text-blue-700">Bijoux</span>
+              <span className="text-amber-600 font-serif">Chic</span>
+            </span>
           </Link>
 
           {/* Desktop Menu */}
@@ -31,10 +47,26 @@ const Navbar = () => {
             <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
               <Link to="/shop">Shop Now</Link>
             </Button>
+            <Link to="/checkout" className="relative">
+              <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-amber-600 transition-colors" />
+              {cartItems > 0 && (
+                <div className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {cartItems}
+                </div>
+              )}
+            </Link>
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-4">
+            <Link to="/checkout" className="relative">
+              <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-amber-600 transition-colors" />
+              {cartItems > 0 && (
+                <div className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {cartItems}
+                </div>
+              )}
+            </Link>
             <button
               onClick={toggleMenu}
               className="text-gray-700 hover:text-amber-600 focus:outline-none"
