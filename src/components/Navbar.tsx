@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,8 +34,7 @@ const Navbar = () => {
             <Link to="/products" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Products</Link>
             <Link to="/shop" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Shop</Link>
             <Link to="/gallery" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Gallery</Link>
-            <Link to="/location" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Location</Link>
-            <Link to="/contact" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Contact</Link>
+            <Link to="/location" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Location & Contact</Link>
             <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
               <Link to="/shop">Shop Now</Link>
             </Button>
@@ -112,14 +112,7 @@ const Navbar = () => {
               className="block py-2 text-gray-700 hover:text-amber-600 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Location
-            </Link>
-            <Link 
-              to="/contact" 
-              className="block py-2 text-gray-700 hover:text-amber-600 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Contact
+              Location & Contact
             </Link>
             <Button 
               variant="outline" 

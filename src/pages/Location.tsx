@@ -1,138 +1,279 @@
 
-import React from "react";
-import { CalendarDays, MapPin, Clock, Globe } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { Phone, Mail, Instagram, MapPin, Clock } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { z } from "zod";
 
-const events = [
-  {
-    id: 1,
-    name: "Salon International de l'Artisanat",
-    location: "Paris, France",
-    date: "June 15-20, 2025",
-    description: "EssaBijoux Chic will showcase our latest collection at this prestigious international crafts exhibition."
-  },
-  {
-    id: 2,
-    name: "Feria de Artesanía",
-    location: "Barcelona, Spain",
-    date: "September 5-10, 2025",
-    description: "Join us at the Barcelona Artisan Fair where we'll present traditional Moroccan jewelry techniques."
-  },
-  {
-    id: 3,
-    name: "Essaouira Crafts Festival",
-    location: "Essaouira, Morocco",
-    date: "October 12-18, 2025",
-    description: "Our annual showcase in our hometown, featuring live demonstrations and exclusive designs."
-  }
-];
+// Form schema
+const contactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  subject: z.string().min(3, "Subject must be at least 3 characters"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type ContactFormData = z.infer<typeof contactSchema>;
 
 const Location = () => {
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error when field is edited
+    if (errors[name as keyof ContactFormData]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate form data
+    try {
+      contactSchema.parse(formData);
+      setErrors({});
+      setIsSubmitting(true);
+      
+      // Simulate API call
+      setTimeout(() => {
+        toast({
+          title: "Message sent!",
+          description: "We'll get back to you as soon as possible.",
+        });
+        setIsSubmitting(false);
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      }, 1000);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors: Partial<Record<keyof ContactFormData, string>> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            formattedErrors[err.path[0] as keyof ContactFormData] = err.message;
+          }
+        });
+        setErrors(formattedErrors);
+      }
+    }
+  };
+
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="relative bg-amber-700 text-white py-16">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1470" 
-            alt="Workshop location" 
-            className="w-full h-full object-cover opacity-20"
-          />
-        </div>
-        <div className="relative container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">Find Us</h1>
-          <p className="max-w-2xl mx-auto text-lg">
-            Visit our workshop in Essaouira or meet us at international exhibitions across Europe.
+    <div className="bg-gray-50 min-h-screen py-12">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">Visit & Contact Us</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Find us in the heart of Essaouira's artisan quarter or reach out through any of our channels
           </p>
         </div>
-      </div>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Workshop information */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="relative h-64">
-              <img 
-                src="https://images.unsplash.com/photo-1602173574767-37ac01994b2c?q=80&w=1470"
-                alt="EssaBijoux Workshop" 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-4 left-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Main Workshop
-              </div>
-            </div>
-            
-            <div className="p-6">
-              <h2 className="text-2xl font-serif font-bold text-gray-900 mb-4">Our Essaouira Workshop</h2>
-              
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <MapPin className="text-amber-600 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Address</p>
-                    <p className="text-gray-600">N° 3, Complexe Artisanal Argana, Essaouira, Morocco</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <Clock className="text-amber-600 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Opening Hours</p>
-                    <p className="text-gray-600">Monday to Saturday: 9:00 AM - 6:00 PM</p>
-                    <p className="text-gray-600">Sunday: 10:00 AM - 4:00 PM</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <Globe className="text-amber-600 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Workshop Tours</p>
-                    <p className="text-gray-600">We offer guided tours of our workshop daily at 11:00 AM and 3:00 PM. Reservations recommended for groups larger than 5 people.</p>
-                  </div>
-                </div>
+        <div className="grid lg:grid-cols-2 gap-12 mb-16">
+          {/* Map or Location Image */}
+          <div className="relative rounded-lg overflow-hidden shadow-xl h-[400px] md:h-[500px]">
+            <img 
+              src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=2070" 
+              alt="Workshop Entrance"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end">
+              <div className="p-6 text-white">
+                <h2 className="text-2xl font-serif font-bold mb-2">Essaouira Workshop</h2>
+                <p className="flex items-center gap-2">
+                  <MapPin className="text-amber-400" size={18} />
+                  N° 3, Complexe Artisanal Argana
+                </p>
               </div>
             </div>
           </div>
-          
-          {/* Map */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-6">
-              <h2 className="text-2xl font-serif font-bold text-gray-900 mb-4">Find Us on the Map</h2>
-              <div className="aspect-ratio w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
-                {/* In a real implementation, this would be a Google Maps embed */}
-                <div className="w-full h-full flex items-center justify-center bg-amber-50">
-                  <div className="text-center p-4">
-                    <MapPin size={48} className="mx-auto text-amber-600 mb-2" />
-                    <p className="text-gray-700">Google Maps would be embedded here</p>
-                    <p className="text-sm text-gray-500 mt-2">Complexe Artisanal Argana, Essaouira, Morocco</p>
+
+          {/* Location Details */}
+          <div className="flex flex-col justify-center">
+            <h2 className="text-3xl font-serif font-bold text-gray-900 mb-6">Our Workshop & Showroom</h2>
+            
+            <p className="text-lg text-gray-600 mb-8">
+              Visit our workshop in the historic artisan quarter of Essaouira where you can see our 
+              master craftsmen at work, creating unique pieces using traditional techniques passed down 
+              through generations.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="border-amber-100">
+                <CardContent className="p-4 flex items-start gap-3">
+                  <div className="bg-amber-50 p-3 rounded-full">
+                    <MapPin className="text-amber-600" />
                   </div>
-                </div>
-              </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Address</h3>
+                    <p className="text-gray-600">N° 3, Complexe Artisanal Argana</p>
+                    <p className="text-gray-600">Essaouira, Morocco</p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-amber-100">
+                <CardContent className="p-4 flex items-start gap-3">
+                  <div className="bg-amber-50 p-3 rounded-full">
+                    <Clock className="text-amber-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Opening Hours</h3>
+                    <p className="text-gray-600">Monday - Saturday</p>
+                    <p className="text-gray-600">9:00 AM - 6:00 PM</p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
         
-        {/* Upcoming events */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-serif font-bold text-gray-900 mb-8 text-center">Upcoming Events & Exhibitions</h2>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            {events.map((event) => (
-              <Card key={event.id} className="border-amber-100 hover:shadow-lg transition-shadow">
-                <CardContent className="p-0">
-                  <div className="bg-amber-50 p-4 flex items-center">
-                    <CalendarDays className="text-amber-600 mr-3" />
-                    <div>
-                      <p className="font-semibold">{event.date}</p>
-                      <p className="text-sm text-gray-600">{event.location}</p>
-                    </div>
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Contact information */}
+          <div className="flex flex-col justify-center">
+            <h2 className="text-3xl font-serif font-bold text-gray-900 mb-6">Contact Information</h2>
+            
+            <div className="space-y-6">
+              <Card className="overflow-hidden border-amber-100">
+                <CardContent className="p-4 flex items-start gap-3">
+                  <div className="bg-amber-50 p-3 rounded-full">
+                    <Phone className="text-amber-600" />
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2">{event.name}</h3>
-                    <p className="text-gray-700">{event.description}</p>
+                  <div>
+                    <h3 className="font-semibold mb-1">Phone Numbers</h3>
+                    <p className="text-gray-700">Morocco: +212 6 57 20 64 99</p>
+                    <p className="text-gray-700">France: +33 7 68 23 94 69</p>
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              
+              <Card className="overflow-hidden border-amber-100">
+                <CardContent className="p-4 flex items-start gap-3">
+                  <div className="bg-amber-50 p-3 rounded-full">
+                    <Mail className="text-amber-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Email Addresses</h3>
+                    <p className="text-gray-700">union.coop.cia@gmail.com</p>
+                    <p className="text-gray-700">contact@essabijoux-chic.com</p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="overflow-hidden border-amber-100">
+                <CardContent className="p-4 flex items-start gap-3">
+                  <div className="bg-amber-50 p-3 rounded-full">
+                    <Instagram className="text-amber-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Social Media</h3>
+                    <p className="text-gray-700">Instagram: @cia.essaouira</p>
+                    <p className="text-gray-700">TikTok: @cia.essaouira</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+          
+          {/* Contact form */}
+          <div>
+            <Card className="border-amber-100">
+              <CardContent className="p-6">
+                <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6">Send Us a Message</h2>
+                
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Your Name
+                    </label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className={errors.name ? "border-red-500" : ""}
+                    />
+                    {errors.name && (
+                      <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Your Email
+                    </label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={errors.email ? "border-red-500" : ""}
+                    />
+                    {errors.email && (
+                      <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                      Subject
+                    </label>
+                    <Input
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className={errors.subject ? "border-red-500" : ""}
+                    />
+                    {errors.subject && (
+                      <p className="mt-1 text-sm text-red-600">{errors.subject}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                      Your Message
+                    </label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      rows={5}
+                      value={formData.message}
+                      onChange={handleChange}
+                      className={errors.message ? "border-red-500" : ""}
+                    />
+                    {errors.message && (
+                      <p className="mt-1 text-sm text-red-600">{errors.message}</p>
+                    )}
+                  </div>
+                  
+                  <Button
+                    type="submit"
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
