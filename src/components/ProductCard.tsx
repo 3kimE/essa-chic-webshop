@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "@/context/CartContext";
 
 export interface ProductCardProps {
   id: string;
@@ -16,6 +17,7 @@ export interface ProductCardProps {
 
 const ProductCard = ({ id, name, image, price, currency, category, description }: ProductCardProps) => {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const handleViewProduct = () => {
     navigate(`/product/${id}`);
@@ -23,8 +25,13 @@ const ProductCard = ({ id, name, image, price, currency, category, description }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Add to cart logic will be implemented
-    console.log(`Added ${name} to cart`);
+    addToCart({
+      id,
+      name,
+      price,
+      currency,
+      image,
+    });
   };
 
   return (

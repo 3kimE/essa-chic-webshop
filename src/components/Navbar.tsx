@@ -1,27 +1,18 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/context/CartContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [cartItems, setCartItems] = useState(0);
   const location = useLocation();
+  const { getTotalItems } = useCart();
+  const cartItems = getTotalItems();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-
-  // Get cart items from localStorage on component mount
-  useEffect(() => {
-    const storedCart = localStorage.getItem("essaBijouxCart");
-    if (storedCart) {
-      const cart = JSON.parse(storedCart);
-      const itemCount = cart.reduce((total: number, item: any) => total + item.quantity, 0);
-      setCartItems(itemCount);
-    }
-  }, [location]); // Re-check when location changes (navigate between pages)
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-gray-100">
@@ -31,7 +22,7 @@ const Navbar = () => {
             <span className="text-2xl font-bold">
               <span className="text-amber-600">Essa</span>
               <span className="text-blue-700">Bijoux</span>
-              <span className="text-amber-600 font-serif">Chic</span>
+              <span className="text-amber-600 font-serif relative -top-1">Chic</span>
             </span>
           </Link>
 

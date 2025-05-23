@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 // Product data (same as in Products.tsx but with more details for shopping)
 const products = [
   {
-    id: "bracelet-1",
-    name: "Silver Berber Bracelet",
+    id: "1",
+    name: "Berber Silver Filigree Bracelet",
     image: "https://images.unsplash.com/photo-1611085583191-a3b181a88401?q=80&w=1470",
     price: 450,
     currency: "MAD" as const,
@@ -17,7 +17,7 @@ const products = [
     description: "Handcrafted silver bracelet with traditional Berber engravings and adjustable size."
   },
   {
-    id: "bracelet-2",
+    id: "2",
     name: "Coral Stone Silver Cuff",
     image: "https://images.unsplash.com/photo-1535632787350-4e68ef0ac584?q=80&w=1470",
     price: 550,
@@ -26,7 +26,7 @@ const products = [
     description: "Adjustable silver cuff with genuine coral stone accents and filigree details."
   },
   {
-    id: "necklace-1",
+    id: "3",
     name: "Filigree Pendant Necklace",
     image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1470",
     price: 680,
@@ -35,7 +35,7 @@ const products = [
     description: "Silver chain with intricate filigree pendant, showcasing traditional Moroccan craftsmanship."
   },
   {
-    id: "necklace-2",
+    id: "bracelet-2",
     name: "Berber Cross Necklace",
     image: "https://images.unsplash.com/photo-1602173574767-37ac01994b2c?q=80&w=1470",
     price: 520,
@@ -99,10 +99,10 @@ const Shop = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="bg-white shadow-md py-8">
+      <div className="bg-amber-50 shadow-md py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900">Shop Our Collection</h1>
+            <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900">Discover Our Jewelry</h1>
             
             {/* Search bar */}
             <div className="relative w-full md:w-auto md:min-w-[300px]">

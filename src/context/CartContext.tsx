@@ -2,13 +2,15 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { toast } from "sonner";
 
-type CartItem = {
+export type CartItem = {
   id: string;
   name: string;
   price: number;
   currency: "MAD" | "EUR";
   image: string;
   quantity: number;
+  variant?: string;
+  color?: string;
 };
 
 type CartContextType = {
@@ -42,7 +44,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addToCart = (item: Omit<CartItem, 'quantity'>) => {
     setCart(prevCart => {
       // Check if item already exists in cart
-      const existingItemIndex = prevCart.findIndex(cartItem => cartItem.id === item.id);
+      const existingItemIndex = prevCart.findIndex(cartItem => 
+        cartItem.id === item.id && 
+        cartItem.variant === item.variant &&
+        cartItem.color === item.color
+      );
       
       if (existingItemIndex !== -1) {
         // Item exists, update quantity
