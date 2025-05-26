@@ -1,19 +1,36 @@
-
 import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 
-// Product data
+// Product data - matching ProductDetail IDs
 const products = [
   {
-    id: "bracelet-1",
-    name: "Silver Berber Bracelet",
-    image: "https://images.unsplash.com/photo-1611085583191-a3b181a88401?q=80&w=1470",
+    id: "1",
+    name: "Berber Silver Filigree Bracelet",
+    image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=2070",
     price: 450,
     currency: "MAD" as const,
     category: "Bracelets",
-    description: "Handcrafted silver bracelet with traditional Berber engravings and adjustable size."
+    description: "Handcrafted adjustable silver bracelet with traditional Berber engravings and adjustable size."
+  },
+  {
+    id: "2",
+    name: "Coral Stone Necklace",
+    image: "https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?q=80&w=2070",
+    price: 680,
+    currency: "MAD" as const,
+    category: "Necklaces",
+    description: "Elegant filigree necklace with natural coral stone pendant showcasing traditional Moroccan craftsmanship."
+  },
+  {
+    id: "3",
+    name: "Enamel Star Earrings",
+    image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=2070",
+    price: 320,
+    currency: "MAD" as const,
+    category: "Earrings",
+    description: "Traditional star motif earrings with colorful enamel details and hook closure."
   },
   {
     id: "bracelet-2",
@@ -25,15 +42,6 @@ const products = [
     description: "Adjustable silver cuff with genuine coral stone accents and filigree details."
   },
   {
-    id: "necklace-1",
-    name: "Filigree Pendant Necklace",
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1470",
-    price: 680,
-    currency: "MAD" as const,
-    category: "Necklaces",
-    description: "Silver chain with intricate filigree pendant, showcasing traditional Moroccan craftsmanship."
-  },
-  {
     id: "necklace-2",
     name: "Berber Cross Necklace",
     image: "https://images.unsplash.com/photo-1602173574767-37ac01994b2c?q=80&w=1470",
@@ -41,15 +49,6 @@ const products = [
     currency: "MAD" as const,
     category: "Necklaces",
     description: "Silver necklace featuring the symbolic Berber cross with delicate enamel details."
-  },
-  {
-    id: "earring-1",
-    name: "Diamond Motif Earrings",
-    image: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?q=80&w=1470",
-    price: 380,
-    currency: "MAD" as const,
-    category: "Earrings",
-    description: "Drop earrings with traditional diamond motif, handcrafted in silver with hook closure."
   },
   {
     id: "earring-2",

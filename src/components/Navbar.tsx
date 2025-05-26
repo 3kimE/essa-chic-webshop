@@ -32,11 +32,10 @@ const Navbar = () => {
             <Link to="/" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Home</Link>
             <Link to="/about" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">About</Link>
             <Link to="/products" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Products</Link>
-          
             <Link to="/gallery" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Gallery</Link>
-            <Link to="/location" className="font-medium text-gray-700 hover:text-amber-600 transition-colors"> Contact</Link>
+            <Link to="/location" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Contact</Link>
             <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
-              <Link to="/shop">Shop Now</Link>
+              <Link to="/products">Shop Now</Link>
             </Button>
             <Link to="/checkout" className="relative">
               <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-amber-600 transition-colors" />
@@ -94,13 +93,6 @@ const Navbar = () => {
               Products
             </Link>
             <Link 
-              to="/shop" 
-              className="block py-2 text-gray-700 hover:text-amber-600 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Shop
-            </Link>
-            <Link 
               to="/gallery" 
               className="block py-2 text-gray-700 hover:text-amber-600 transition-colors"
               onClick={() => setIsOpen(false)}
@@ -119,7 +111,7 @@ const Navbar = () => {
               className="w-full border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
-              <Link to="/shop">Shop Now</Link>
+              <Link to="/products">Shop Now</Link>
             </Button>
           </div>
         </div>
