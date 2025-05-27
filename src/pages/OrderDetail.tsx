@@ -151,7 +151,7 @@ const OrderDetail = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
-                  <Badge className={getStatusColor(order.status)} className="text-sm px-3 py-1">
+                  <Badge className={`${getStatusColor(order.status)} text-sm px-3 py-1`}>
                     {order.status.toUpperCase()}
                   </Badge>
                   {order.tracking_number && (
