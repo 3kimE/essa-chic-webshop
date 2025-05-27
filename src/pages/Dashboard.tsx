@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -50,7 +49,12 @@ const Dashboard = () => {
           variant: "destructive",
         });
       } else {
-        setOrders(data || []);
+        // Transform the data to match our Order interface
+        const transformedOrders = (data || []).map(order => ({
+          ...order,
+          items: Array.isArray(order.items) ? order.items : []
+        }));
+        setOrders(transformedOrders);
       }
     } catch (error) {
       console.error('Error:', error);

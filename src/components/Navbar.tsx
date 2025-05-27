@@ -43,9 +43,13 @@ const Navbar = () => {
                 Dashboard
               </Link>
             ) : (
-              <Link to="/auth" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">
-                Login
-              </Link>
+              <Button 
+                variant="outline" 
+                className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                asChild
+              >
+                <Link to="/auth">Login</Link>
+              </Button>
             )}
 
             <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
@@ -129,13 +133,14 @@ const Navbar = () => {
                 Dashboard
               </Link>
             ) : (
-              <Link 
-                to="/auth" 
-                className="block py-2 text-gray-700 hover:text-amber-600 transition-colors"
+              <Button 
+                variant="outline" 
+                className="w-full border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white mb-2"
                 onClick={() => setIsOpen(false)}
+                asChild
               >
-                Login
-              </Link>
+                <Link to="/auth">Login</Link>
+              </Button>
             )}
             <Button 
               variant="outline" 

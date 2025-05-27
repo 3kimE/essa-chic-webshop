@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -56,7 +55,12 @@ const OrderDetail = () => {
         });
         navigate("/dashboard");
       } else {
-        setOrder(data);
+        // Transform the data to match our OrderDetail interface
+        const transformedOrder = {
+          ...data,
+          items: Array.isArray(data.items) ? data.items : []
+        };
+        setOrder(transformedOrder);
       }
     } catch (error) {
       console.error('Error:', error);
