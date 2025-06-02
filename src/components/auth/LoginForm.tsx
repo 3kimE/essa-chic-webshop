@@ -29,25 +29,11 @@ const LoginForm = ({ onToggleMode, onSuccess }: LoginFormProps) => {
       });
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast({
-            title: "Error",
-            description: "Invalid email or password. Please check your credentials and try again.",
-            variant: "destructive",
-          });
-        } else if (error.message.includes("Email not confirmed")) {
-          toast({
-            title: "Email not confirmed",
-            description: "Please check your email and click the confirmation link before signing in.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Error",
+          description: "Invalid email or password. Please check your credentials and try again.",
+          variant: "destructive",
+        });
       } else if (data.user) {
         toast({
           title: "Success",

@@ -51,7 +51,7 @@ const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          emailRedirectTo: undefined, // Disable email confirmation
         },
       });
 
@@ -69,19 +69,12 @@ const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
             variant: "destructive",
           });
         }
-      } else {
-        if (data.user && !data.user.email_confirmed_at) {
-          toast({
-            title: "Check your email",
-            description: "Please check your email to confirm your account before signing in.",
-          });
-        } else {
-          toast({
-            title: "Success",
-            description: "Account created successfully!",
-          });
-          onSuccess();
-        }
+      } else if (data.user) {
+        toast({
+          title: "Success",
+          description: "Account created successfully! You can now sign in.",
+        });
+        onSuccess();
       }
     } catch (error) {
       toast({
