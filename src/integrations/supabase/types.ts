@@ -47,21 +47,51 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
+          bio: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          date_of_birth: string | null
+          email: string | null
           full_name: string | null
+          gender: string | null
           id: string
+          phone: string | null
+          preferences: Json | null
+          profile_picture_url: string | null
           updated_at: string
         }
         Insert: {
+          address?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
           full_name?: string | null
+          gender?: string | null
           id: string
+          phone?: string | null
+          preferences?: Json | null
+          profile_picture_url?: string | null
           updated_at?: string
         }
         Update: {
+          address?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
           full_name?: string | null
+          gender?: string | null
           id?: string
+          phone?: string | null
+          preferences?: Json | null
+          profile_picture_url?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -71,7 +101,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_user_profile: {
+        Args: { user_id: string; profile_data: Json }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

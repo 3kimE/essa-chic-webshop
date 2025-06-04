@@ -14,6 +14,7 @@ import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 import OrderDetail from "./pages/OrderDetail";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/order/:id" element={<OrderDetail />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

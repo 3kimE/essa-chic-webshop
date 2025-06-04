@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { Package, Truck, User } from "lucide-react";
+import { Package, Truck, User, Settings } from "lucide-react";
 
 interface Order {
   id: string;
@@ -104,6 +105,13 @@ const Dashboard = () => {
             <p className="text-gray-600 mt-2">Manage your orders and track shipments</p>
           </div>
           <div className="flex gap-4">
+            <Button
+              onClick={() => navigate("/profile")}
+              variant="outline"
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Manage Profile
+            </Button>
             <Button
               onClick={() => navigate("/products")}
               className="bg-amber-600 hover:bg-amber-700"
