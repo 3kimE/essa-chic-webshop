@@ -37,19 +37,11 @@ const Navbar = () => {
             <Link to="/gallery" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Gallery</Link>
             <Link to="/location" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Contact</Link>
             
-            {user ? (
+            {user && (
               <Link to="/dashboard" className="flex items-center gap-2 font-medium text-gray-700 hover:text-amber-600 transition-colors">
                 <User className="w-4 h-4" />
                 Dashboard
               </Link>
-            ) : (
-              <Button 
-                variant="outline" 
-                className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                asChild
-              >
-                <Link to="/auth">Login</Link>
-              </Button>
             )}
 
             <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
@@ -124,7 +116,7 @@ const Navbar = () => {
             >
               Location & Contact
             </Link>
-            {user ? (
+            {user && (
               <Link 
                 to="/dashboard" 
                 className="block py-2 text-gray-700 hover:text-amber-600 transition-colors"
@@ -132,15 +124,6 @@ const Navbar = () => {
               >
                 Dashboard
               </Link>
-            ) : (
-              <Button 
-                variant="outline" 
-                className="w-full border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white mb-2"
-                onClick={() => setIsOpen(false)}
-                asChild
-              >
-                <Link to="/auth">Login</Link>
-              </Button>
             )}
             <Button 
               variant="outline" 
