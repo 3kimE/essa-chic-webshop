@@ -51,6 +51,8 @@ const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
     setLoading(true);
 
     try {
+      console.log('Starting registration process...');
+      
       // First, create the user account
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -59,11 +61,11 @@ const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: undefined, // Disable email confirmation
         },
       });
 
       if (error) {
+        console.error('Signup error:', error);
         if (error.message.includes("User already registered")) {
           toast({
             title: "Account exists",
@@ -77,26 +79,77 @@ const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
             variant: "destructive",
           });
         }
-      } else if (data.user) {
-        // Wait a moment for the profile to be created by the trigger
-        setTimeout(async () => {
-          // Update the profile with additional information
-          const { error: updateError } = await supabase.rpc('update_user_profile', {
-            user_id: data.user.id,
-            profile_data: {
-              phone,
-              date_of_birth: dateOfBirth || null,
-              gender: gender || null,
-              address: address || null,
-              city: city || null,
-              country: country || null,
-            }
-          });
+        return;
+      }
 
-          if (updateError) {
-            console.error('Error updating profile:', updateError);
+      if (data.user) {
+        console.log('User created successfully:', data.user.id);
+
+        // Wait for the trigger to create the profile, then update it
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Now update the profile with additional information
+        try {
+          console.log('Updating profile with additional data...');
+          
+          // First check if profile exists
+          const { data: existingProfile, error: checkError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', data.user.id)
+            .single();
+
+          if (checkError) {
+            console.error('Profile check error:', checkError);
+            // If profile doesn't exist, create it manually
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                full_name: fullName,
+                email: email,
+                phone: phone || null,
+                date_of_birth: dateOfBirth || null,
+                gender: gender || null,
+                address: address || null,
+                city: city || null,
+                country: country || null,
+              });
+
+            if (insertError) {
+              console.error('Profile insert error:', insertError);
+              throw insertError;
+            }
+          } else {
+            // Profile exists, update it
+            const { error: updateError } = await supabase
+              .from('profiles')
+              .update({
+                phone: phone || null,
+                date_of_birth: dateOfBirth || null,
+                gender: gender || null,
+                address: address || null,
+                city: city || null,
+                country: country || null,
+              })
+              .eq('id', data.user.id);
+
+            if (updateError) {
+              console.error('Profile update error:', updateError);
+              throw updateError;
+            }
           }
-        }, 1000);
+
+          console.log('Profile data saved successfully');
+
+        } catch (profileError) {
+          console.error('Error saving profile data:', profileError);
+          toast({
+            title: "Warning",
+            description: "Account created but some profile data might not have been saved. You can update it later in your profile settings.",
+            variant: "destructive",
+          });
+        }
 
         toast({
           title: "Success",
@@ -105,6 +158,7 @@ const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
         onSuccess();
       }
     } catch (error) {
+      console.error('Registration error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
