@@ -9,10 +9,12 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, CreditCard, Truck, Shield, Plus, Minus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/context/CartContext";
+import { supabase } from "@/lib/supabase";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cart, updateQuantity, removeFromCart, getTotalPrice, clearCart } = useCart();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -40,7 +42,76 @@ const Checkout = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const generateOrderNumber = () => {
+    return "ESS" + Date.now();
+  };
+
+  const createOrder = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const orderNumber = generateOrderNumber();
+      const customerName = `${formData.firstName} ${formData.lastName}`;
+
+      // Create the order
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user?.id || null,
+          order_number: orderNumber,
+          status: 'pending',
+          subtotal: subtotal,
+          shipping_cost: shipping,
+          total_amount: total,
+          currency: 'MAD',
+          customer_name: customerName,
+          customer_email: formData.email,
+          customer_phone: formData.phone,
+          shipping_address: formData.address,
+          shipping_city: formData.city,
+          shipping_postal_code: formData.postalCode,
+          shipping_country: formData.country,
+          payment_method: 'credit_card',
+          payment_status: 'completed'
+        })
+        .select()
+        .single();
+
+      if (orderError) {
+        console.error('Order creation error:', orderError);
+        throw new Error('Failed to create order');
+      }
+
+      // Create order items
+      const orderItems = cart.map(item => ({
+        order_id: order.id,
+        product_id: item.id,
+        product_name: item.name,
+        product_image: item.image,
+        price: item.price,
+        quantity: item.quantity,
+        variant: item.variant || null,
+        color: item.color || null,
+        subtotal: item.price * item.quantity
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) {
+        console.error('Order items creation error:', itemsError);
+        throw new Error('Failed to create order items');
+      }
+
+      return orderNumber;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (cart.length === 0) {
@@ -57,16 +128,27 @@ const Checkout = () => {
       return;
     }
 
-    // Simulate payment processing
-    toast.success("Order placed successfully! You will receive a confirmation email shortly.");
-    
-    // Clear cart after successful checkout
-    clearCart();
-    
-    // In a real app, this would process the payment and redirect to a success page
-    setTimeout(() => {
-      navigate("/order-success", { state: { orderId: "ESS" + Date.now() } });
-    }, 2000);
+    setIsProcessing(true);
+
+    try {
+      // Create order in database
+      const orderNumber = await createOrder();
+      
+      toast.success("Order placed successfully! You will receive a confirmation email shortly.");
+      
+      // Clear cart after successful checkout
+      clearCart();
+      
+      // Redirect to success page
+      setTimeout(() => {
+        navigate("/order-success", { state: { orderId: orderNumber } });
+      }, 2000);
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error("There was an error processing your order. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   // If cart is empty, show empty cart message
@@ -291,9 +373,10 @@ const Checkout = () => {
                 type="submit" 
                 className="w-full bg-amber-600 hover:bg-amber-700 text-white py-6 text-lg"
                 size="lg"
+                disabled={isProcessing}
               >
                 <CreditCard className="w-5 h-5 mr-2" />
-                Complete Order - {total} MAD
+                {isProcessing ? "Processing..." : `Complete Order - ${total} MAD`}
               </Button>
             </form>
           </div>
