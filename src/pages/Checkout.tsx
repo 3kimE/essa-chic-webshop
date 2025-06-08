@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -48,39 +47,48 @@ const Checkout = () => {
 
   const createOrder = async () => {
     try {
+      // Get current user (might be null for guest checkout)
       const { data: { user } } = await supabase.auth.getUser();
       
       const orderNumber = generateOrderNumber();
       const customerName = `${formData.firstName} ${formData.lastName}`;
 
-      // Create the order
+      console.log('Creating order with user:', user?.id || 'guest');
+
+      // Create the order with proper user_id handling
+      const orderData = {
+        user_id: user?.id || null, // Allow null for guest checkout
+        order_number: orderNumber,
+        status: 'pending',
+        subtotal: subtotal,
+        shipping_cost: shipping,
+        total_amount: total,
+        currency: 'MAD',
+        customer_name: customerName,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+        shipping_address: formData.address,
+        shipping_city: formData.city,
+        shipping_postal_code: formData.postalCode,
+        shipping_country: formData.country,
+        payment_method: 'credit_card',
+        payment_status: 'completed'
+      };
+
+      console.log('Order data:', orderData);
+
       const { data: order, error: orderError } = await supabase
         .from('orders')
-        .insert({
-          user_id: user?.id || null,
-          order_number: orderNumber,
-          status: 'pending',
-          subtotal: subtotal,
-          shipping_cost: shipping,
-          total_amount: total,
-          currency: 'MAD',
-          customer_name: customerName,
-          customer_email: formData.email,
-          customer_phone: formData.phone,
-          shipping_address: formData.address,
-          shipping_city: formData.city,
-          shipping_postal_code: formData.postalCode,
-          shipping_country: formData.country,
-          payment_method: 'credit_card',
-          payment_status: 'completed'
-        })
+        .insert(orderData)
         .select()
         .single();
 
       if (orderError) {
         console.error('Order creation error:', orderError);
-        throw new Error('Failed to create order');
+        throw new Error('Failed to create order: ' + orderError.message);
       }
+
+      console.log('Order created successfully:', order);
 
       // Create order items
       const orderItems = cart.map(item => ({
@@ -95,14 +103,18 @@ const Checkout = () => {
         subtotal: item.price * item.quantity
       }));
 
+      console.log('Creating order items:', orderItems);
+
       const { error: itemsError } = await supabase
         .from('order_items')
         .insert(orderItems);
 
       if (itemsError) {
         console.error('Order items creation error:', itemsError);
-        throw new Error('Failed to create order items');
+        throw new Error('Failed to create order items: ' + itemsError.message);
       }
+
+      console.log('Order items created successfully');
 
       return orderNumber;
     } catch (error) {
