@@ -8,7 +8,6 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, CreditCard, Truck, Shield, Plus, Minus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/context/CartContext";
-import { supabase } from "@/lib/supabase";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -45,84 +44,6 @@ const Checkout = () => {
     return "ESS" + Date.now();
   };
 
-  const createOrder = async () => {
-    try {
-      // Get current user (might be null for guest checkout)
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      const orderNumber = generateOrderNumber();
-      const customerName = `${formData.firstName} ${formData.lastName}`;
-
-      console.log('Creating order with user:', user?.id || 'guest');
-
-      // Create the order with proper user_id handling
-      const orderData = {
-        user_id: user?.id || null, // Allow null for guest checkout
-        order_number: orderNumber,
-        status: 'pending',
-        subtotal: subtotal,
-        shipping_cost: shipping,
-        total_amount: total,
-        currency: 'MAD',
-        customer_name: customerName,
-        customer_email: formData.email,
-        customer_phone: formData.phone,
-        shipping_address: formData.address,
-        shipping_city: formData.city,
-        shipping_postal_code: formData.postalCode,
-        shipping_country: formData.country,
-        payment_method: 'credit_card',
-        payment_status: 'completed'
-      };
-
-      console.log('Order data:', orderData);
-
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .insert(orderData)
-        .select()
-        .single();
-
-      if (orderError) {
-        console.error('Order creation error:', orderError);
-        throw new Error('Failed to create order: ' + orderError.message);
-      }
-
-      console.log('Order created successfully:', order);
-
-      // Create order items
-      const orderItems = cart.map(item => ({
-        order_id: order.id,
-        product_id: item.id,
-        product_name: item.name,
-        product_image: item.image,
-        price: item.price,
-        quantity: item.quantity,
-        variant: item.variant || null,
-        color: item.color || null,
-        subtotal: item.price * item.quantity
-      }));
-
-      console.log('Creating order items:', orderItems);
-
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems);
-
-      if (itemsError) {
-        console.error('Order items creation error:', itemsError);
-        throw new Error('Failed to create order items: ' + itemsError.message);
-      }
-
-      console.log('Order items created successfully');
-
-      return orderNumber;
-    } catch (error) {
-      console.error('Error creating order:', error);
-      throw error;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -143,8 +64,11 @@ const Checkout = () => {
     setIsProcessing(true);
 
     try {
-      // Create order in database
-      const orderNumber = await createOrder();
+      // Simulate order processing
+      const orderNumber = generateOrderNumber();
+      
+      // Simulate processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast.success("Order placed successfully! You will receive a confirmation email shortly.");
       
