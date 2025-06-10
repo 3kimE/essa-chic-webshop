@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, CreditCard, Truck, Shield, Plus, Minus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/context/CartContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -44,6 +45,66 @@ const Checkout = () => {
     return "ESS" + Date.now();
   };
 
+  const saveOrderToDatabase = async (orderNumber: string) => {
+    try {
+      // Insert order into database
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          order_number: orderNumber,
+          customer_first_name: formData.firstName,
+          customer_last_name: formData.lastName,
+          customer_email: formData.email,
+          customer_phone: formData.phone,
+          shipping_address: formData.address,
+          shipping_city: formData.city,
+          shipping_postal_code: formData.postalCode,
+          shipping_country: formData.country,
+          cardholder_name: formData.cardName,
+          subtotal: subtotal,
+          shipping_cost: shipping,
+          total_amount: total,
+          currency: 'MAD',
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (orderError) {
+        console.error('Error creating order:', orderError);
+        throw orderError;
+      }
+
+      // Insert order items
+      const orderItems = cart.map(item => ({
+        order_id: orderData.id,
+        product_id: item.id,
+        product_name: item.name,
+        product_image: item.image,
+        product_variant: item.variant || null,
+        product_color: item.color || null,
+        unit_price: item.price,
+        quantity: item.quantity,
+        total_price: item.price * item.quantity
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) {
+        console.error('Error creating order items:', itemsError);
+        throw itemsError;
+      }
+
+      console.log('Order saved successfully:', orderData);
+      return orderData;
+    } catch (error) {
+      console.error('Database error:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -64,8 +125,11 @@ const Checkout = () => {
     setIsProcessing(true);
 
     try {
-      // Simulate order processing
+      // Generate order number
       const orderNumber = generateOrderNumber();
+      
+      // Save order to database
+      await saveOrderToDatabase(orderNumber);
       
       // Simulate processing delay
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -105,7 +169,7 @@ const Checkout = () => {
             <h1 className="text-3xl font-serif font-bold text-gray-900 mb-4">Your Cart is Empty</h1>
             <p className="text-gray-600 mb-8">Looks like you haven't added any items to your cart yet.</p>
             <Button 
-              onClick={() => navigate('/shop')}
+              onClick={() => navigate('/products')}
               className="bg-amber-600 hover:bg-amber-700 text-white"
               size="lg"
             >
@@ -409,7 +473,7 @@ const Checkout = () => {
             
             <Button
               variant="outline" 
-              onClick={() => navigate('/shop')} 
+              onClick={() => navigate('/products')} 
               className="w-full border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white"
             >
               Continue Shopping
