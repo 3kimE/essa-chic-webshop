@@ -1,16 +1,14 @@
 
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ShoppingCart, User } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { getTotalItems } = useCart();
-  const { user } = useAuth();
   const cartItems = getTotalItems();
 
   const toggleMenu = () => {
@@ -37,12 +35,9 @@ const Navbar = () => {
             <Link to="/gallery" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Gallery</Link>
             <Link to="/location" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">Contact</Link>
             
-            {user && (
-              <Link to="/dashboard" className="flex items-center gap-2 font-medium text-gray-700 hover:text-amber-600 transition-colors">
-                <User className="w-4 h-4" />
-                Dashboard
-              </Link>
-            )}
+            <Link to="/dashboard" className="font-medium text-gray-700 hover:text-amber-600 transition-colors">
+              Dashboard
+            </Link>
 
             <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
               <Link to="/products">Shop Now</Link>
@@ -116,15 +111,13 @@ const Navbar = () => {
             >
               Location & Contact
             </Link>
-            {user && (
-              <Link 
-                to="/dashboard" 
-                className="block py-2 text-gray-700 hover:text-amber-600 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Dashboard
-              </Link>
-            )}
+            <Link 
+              to="/dashboard" 
+              className="block py-2 text-gray-700 hover:text-amber-600 transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Dashboard
+            </Link>
             <Button 
               variant="outline" 
               className="w-full border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white"
