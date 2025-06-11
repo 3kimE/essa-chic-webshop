@@ -15,6 +15,7 @@ import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Dashboard from "./pages/Dashboard";
 import OrderDetail from "./pages/OrderDetail";
+import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 import { CartProvider } from "./context/CartContext";
@@ -41,6 +42,7 @@ const App: React.FC = () => {
               <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/order/:id" element={<OrderDetail />} />
+              <Route path="/admin-login" element={<AdminLogin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

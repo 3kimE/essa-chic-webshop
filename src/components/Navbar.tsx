@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 
@@ -42,6 +42,7 @@ const Navbar = () => {
             <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
               <Link to="/products">Shop Now</Link>
             </Button>
+            
             <Link to="/checkout" className="relative">
               <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-amber-600 transition-colors" />
               {cartItems > 0 && (
@@ -49,6 +50,13 @@ const Navbar = () => {
                   {cartItems}
                 </div>
               )}
+            </Link>
+
+            <Link to="/admin-login">
+              <Button variant="outline" size="sm" className="border-gray-300 text-gray-600 hover:bg-gray-100">
+                <Shield className="w-4 h-4 mr-2" />
+                Admin
+              </Button>
             </Link>
           </div>
 
@@ -125,6 +133,16 @@ const Navbar = () => {
             >
               <Link to="/products">Shop Now</Link>
             </Button>
+            <Link 
+              to="/admin-login" 
+              className="block py-2"
+              onClick={() => setIsOpen(false)}
+            >
+              <Button variant="outline" size="sm" className="w-full border-gray-300 text-gray-600 hover:bg-gray-100">
+                <Shield className="w-4 h-4 mr-2" />
+                Admin Login
+              </Button>
+            </Link>
           </div>
         </div>
       )}
