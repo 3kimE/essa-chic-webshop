@@ -321,19 +321,36 @@ const AdminDashboard = () => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-1 max-w-xs">
+                          <div className="space-y-2 max-w-xs">
                             {order.order_items.slice(0, 2).map((item) => (
-                              <div key={item.id} className="text-xs bg-gray-100 p-2 rounded border">
-                                <div className="font-medium text-gray-800 truncate">
-                                  {item.product_name}
-                                </div>
-                                <div className="text-gray-600">
-                                  {item.quantity}x {item.unit_price} {order.currency}
+                              <div key={item.id} className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg border">
+                                <img 
+                                  src={item.product_image} 
+                                  alt={item.product_name}
+                                  className="w-12 h-12 object-cover rounded-md flex-shrink-0"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-gray-800 text-sm truncate">
+                                    {item.product_name}
+                                  </div>
+                                  {item.product_variant && (
+                                    <div className="text-xs text-gray-500">
+                                      {item.product_variant}
+                                    </div>
+                                  )}
+                                  {item.product_color && (
+                                    <div className="text-xs text-gray-500">
+                                      Color: {item.product_color}
+                                    </div>
+                                  )}
+                                  <div className="text-xs text-gray-600 font-medium">
+                                    {item.quantity}x {item.unit_price} {order.currency}
+                                  </div>
                                 </div>
                               </div>
                             ))}
                             {order.order_items.length > 2 && (
-                              <div className="text-xs text-gray-500 text-center">
+                              <div className="text-xs text-gray-500 text-center bg-gray-100 p-2 rounded">
                                 +{order.order_items.length - 2} more items
                               </div>
                             )}
