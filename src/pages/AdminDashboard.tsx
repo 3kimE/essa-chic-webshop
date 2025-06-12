@@ -1,11 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Shield, LogOut, Package, Users, Calendar, DollarSign, ShoppingBag, Search, Filter } from "lucide-react";
+import { Shield, LogOut, Package, Users, Calendar, DollarSign, ShoppingBag, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -58,6 +57,7 @@ const AdminDashboard = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
 
   useEffect(() => {
     // Check if admin is logged in
@@ -125,9 +125,10 @@ const AdminDashboard = () => {
   const getStatusBadgeVariant = (status: string) => {
     switch (status.toLowerCase()) {
       case 'pending':
-        return 'default';
+        return 'default'; // This will be styled as yellow
+      case 'paid':
       case 'completed':
-        return 'secondary';
+        return 'secondary'; // This will be styled as green
       case 'cancelled':
         return 'destructive';
       default:
@@ -144,6 +145,10 @@ const AdminDashboard = () => {
       minute: '2-digit'
     });
   };
+
+  const filteredOrders = statusFilter === 'all' 
+    ? orders 
+    : orders.filter(order => order.status.toLowerCase() === statusFilter.toLowerCase());
 
   if (loading) {
     return (
@@ -250,19 +255,22 @@ const AdminDashboard = () => {
                 </CardTitle>
               </div>
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm">
-                  <Search className="w-4 h-4 mr-2" />
-                  Search
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filter
-                </Button>
+                <select 
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="paid">Paid</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
               </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            {orders.length === 0 ? (
+            {filteredOrders.length === 0 ? (
               <div className="text-center py-12">
                 <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-lg text-gray-500">No orders found</p>
@@ -281,7 +289,7 @@ const AdminDashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {orders.map((order) => (
+                    {filteredOrders.map((order) => (
                       <TableRow key={order.id} className="hover:bg-gray-50 transition-colors">
                         <TableCell>
                           <div className="font-medium text-blue-600">
@@ -291,7 +299,13 @@ const AdminDashboard = () => {
                         <TableCell>
                           <Badge 
                             variant={getStatusBadgeVariant(order.status)}
-                            className="capitalize"
+                            className={`capitalize ${
+                              order.status.toLowerCase() === 'pending' 
+                                ? 'bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-200' 
+                                : order.status.toLowerCase() === 'paid' || order.status.toLowerCase() === 'completed'
+                                ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200'
+                                : ''
+                            }`}
                           >
                             {order.status}
                           </Badge>
@@ -374,16 +388,6 @@ const AdminDashboard = () => {
                 <CardTitle className="text-lg font-semibold text-gray-900">
                   Customers Management
                 </CardTitle>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm">
-                  <Search className="w-4 h-4 mr-2" />
-                  Search
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filter
-                </Button>
               </div>
             </div>
           </CardHeader>
